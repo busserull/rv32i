@@ -14,6 +14,8 @@ class ALU extends Module {
     }
   )
 
+  io.result := 0.U(32.W)
+
   switch(io.alu_op){
     is(ADD){
       io.result := io.op_one + io.op_two
@@ -53,8 +55,11 @@ class ALU extends Module {
       
     }
     */
+
+    /* Not really needed any longer
     is(DC){
       io.result := 0.U(32.W)
     }
+    */
   }
 }

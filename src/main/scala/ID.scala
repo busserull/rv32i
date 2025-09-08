@@ -51,9 +51,10 @@ class InstructionDecode extends MultiIOModule {
 
   registers.io.readAddress1 := raw_inst(19, 15)
   registers.io.readAddress2 := raw_inst(24, 20)
-  // registers.io.writeEnable  := false.B
-  // registers.io.writeAddress := 0.U
-  // registers.io.writeData    := 0.U
+
+  registers.io.writeEnable  := false.B
+  registers.io.writeAddress := 0.U
+  registers.io.writeData    := 0.U
 
   val rs1 = Wire(UInt(32.W))
   val rs2 = Wire(UInt(32.W))
@@ -62,13 +63,26 @@ class InstructionDecode extends MultiIOModule {
   rs2 := registers.io.readData2
 
 
-
-
-
   decoder.instruction := io.inst
 
   io.alu_op := decoder.ALUop
+  io.rd := raw_inst(11, 7)
 
+  io.reg_write := decoder.controlSignals.regWrite
+  io.mem_read := decoder.controlSignals.memRead
+  io.mem_write := decoder.controlSignals.memWrite
+  io.branch := decoder.controlSignals.branch
+  io.jump := decoder.controlSignals.jump
+
+  when(decoder.op1Select === Op1Select.rs1){
+    io.op_one := registers.io.readData1
+  }.elsewhen(decoder.op1Select === Op1Select.PC){
+    io.op_one := io.pc
+  }.otherwise{
+    io.op_one := 0.U(32.W)
+  }
+
+  /*
   switch(decoder.op1Select){
     is(Op1Select.rs1){
       io.op_one := registers.io.readData1
@@ -80,7 +94,17 @@ class InstructionDecode extends MultiIOModule {
       io.op_one := 0.U(32.W)
     }
   }
+  */
 
+  when(decoder.op2Select === Op2Select.rs2){
+    io.op_two := registers.io.readData2
+  }.elsewhen(decoder.op2Select === Op2Select.imm){
+    io.op_two := raw_inst(31, 20)
+  }.otherwise{
+    io.op_two := 0.U(32.W)
+  }
+
+  /*
   switch(decoder.op2Select){
     is(Op2Select.rs2){
       io.op_two := registers.io.readData2
@@ -92,4 +116,5 @@ class InstructionDecode extends MultiIOModule {
       io.op_two := 0.U(32.W)
     }
   }
+  */
 }

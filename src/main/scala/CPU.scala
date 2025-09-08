@@ -18,21 +18,16 @@ class CPU extends MultiIOModule {
     }
   )
 
-  /**
-    You need to create the classes for these yourself
-    */
-  // val IFBarrier  = Module(new IFBarrier).io
-  // val IDBarrier  = Module(new IDBarrier).io
-  // val EXBarrier  = Module(new EXBarrier).io
-  // val MEMBarrier = Module(new MEMBarrier).io
   val IFB = Module(new IFBarrier).io
   val IDB = Module(new IDBarrier).io
+  val EXB = Module(new EXBarrier).io
+  val MEMB = Module(new MEMBarrier).io
 
   val IF  = Module(new InstructionFetch)
   val ID  = Module(new InstructionDecode)
   val EX  = Module(new Execute)
   val MEM = Module(new MemoryFetch)
-  // val WB  = Module(new Execute) (You may not need this one?)
+  val WB  = Module(new WriteBack)
 
 
   /**
@@ -40,6 +35,7 @@ class CPU extends MultiIOModule {
     */
   IF.testHarness.IMEMsetup     := testHarness.setupSignals.IMEMsignals
   ID.testHarness.registerSetup := testHarness.setupSignals.registerSignals
+  WB.test_harness.register_setup := testHarness.setupSignals.registerSignals
   MEM.testHarness.DMEMsetup    := testHarness.setupSignals.DMEMsignals
 
   testHarness.testReadouts.registerRead := ID.testHarness.registerPeek
@@ -65,6 +61,7 @@ class CPU extends MultiIOModule {
   IDB.in_mem_write := ID.io.mem_write
   IDB.in_branch := ID.io.branch
   IDB.in_jump := ID.io.jump
+  IDB.in_rd := ID.io.rd
   IDB.in_alu_op := ID.io.alu_op
   IDB.in_op_one := ID.io.op_one
   IDB.in_op_two := ID.io.op_two
@@ -74,4 +71,26 @@ class CPU extends MultiIOModule {
   EX.io.op_two := IDB.out_op_two
 
   /* EX Barrier */
+  EXB.in_reg_write := IDB.out_reg_write
+  EXB.in_mem_read := IDB.out_mem_read
+  EXB.in_mem_write := IDB.out_mem_write
+  EXB.in_branch := IDB.out_branch
+  EXB.in_jump := IDB.out_jump
+  EXB.in_rd := IDB.out_rd
+  EXB.in_result := EX.io.result
+
+  /* TODO: For now just stub out memory entirely */
+  // MEM.io.alu_op := EXB.out_alu_op
+  // MEM.io.op_one := EXB.out_op_one
+  // MEM.io.op_two := EXB.out_op_two
+
+  /* MEM Barrier */
+  MEMB.in_rd := EXB.out_rd
+  MEMB.in_reg_write := EXB.out_reg_write
+  MEMB.in_result := EXB.out_result
+
+  /* Write Back */
+  WB.io.rd := MEMB.out_rd
+  WB.io.reg_write := MEMB.out_reg_write
+  WB.io.result := MEMB.out_result
 }

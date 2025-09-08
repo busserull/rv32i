@@ -18,6 +18,13 @@ class MemoryFetch() extends MultiIOModule {
 
   val io = IO(
     new Bundle {
+    /* TODO:
+      val data_in = Input(UInt(32.W))
+      val mem_read = Input(Bool())
+      val mem_write = Input(Bool())
+
+      val data_out = Output(UInt(32.W))
+      */
     })
 
 

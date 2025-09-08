@@ -29,6 +29,7 @@ class IDBarrier extends Module {
       val in_branch = Input(Bool())
       val in_jump = Input(Bool())
 
+      val in_rd = Input(UInt(5.W))
       val in_alu_op = Input(UInt(4.W))
       val in_op_one = Input(UInt(32.W))
       val in_op_two = Input(UInt(32.W))
@@ -40,6 +41,7 @@ class IDBarrier extends Module {
       val out_branch = Output(Bool())
       val out_jump = Output(Bool())
 
+      val out_rd = Output(UInt(5.W))
       val out_alu_op = Output(UInt(4.W))
       val out_op_one = Output(UInt(32.W))
       val out_op_two = Output(UInt(32.W))
@@ -51,6 +53,7 @@ class IDBarrier extends Module {
    val mem_write = RegInit(0.U(32.W))
    val branch = RegInit(0.U(32.W))
    val jump = RegInit(0.U(32.W))
+   val rd = RegInit(0.U(5.W))
    val alu_op = RegInit(0.U(32.W))
    val op_one = RegInit(0.U(32.W))
    val op_two = RegInit(0.U(32.W))
@@ -60,6 +63,7 @@ class IDBarrier extends Module {
    mem_write := io.in_mem_write
    branch := io.in_branch
    jump := io.in_jump
+   rd := io.in_rd
    alu_op := io.in_alu_op
    op_one := io.in_op_one
    op_two := io.in_op_two
@@ -69,7 +73,84 @@ class IDBarrier extends Module {
    io.out_mem_write := mem_write
    io.out_branch := branch
    io.out_jump := jump
+   io.out_rd := rd
    io.out_alu_op := alu_op
    io.out_op_one := op_one
    io.out_op_two := op_two
+}
+
+class EXBarrier extends Module {
+  val io = IO(
+    new Bundle {
+      val in_reg_write = Input(Bool())
+      val in_mem_read = Input(Bool())
+      val in_mem_write = Input(Bool())
+      val in_branch = Input(Bool())
+      val in_jump = Input(Bool())
+
+      val in_rd = Input(UInt(5.W))
+      val in_result = Input(UInt(32.W))
+
+
+      val out_reg_write = Output(Bool())
+      val out_mem_read = Output(Bool())
+      val out_mem_write = Output(Bool())
+      val out_branch = Output(Bool())
+      val out_jump = Output(Bool())
+
+      val out_rd = Output(UInt(5.W))
+      val out_result = Output(UInt(32.W))
+    }
+  )
+
+   val reg_write = RegInit(0.U(32.W))
+   val mem_read = RegInit(0.U(32.W))
+   val mem_write = RegInit(0.U(32.W))
+   val branch = RegInit(0.U(32.W))
+   val jump = RegInit(0.U(32.W))
+   val rd = RegInit(0.U(5.W))
+   val result = RegInit(0.U(32.W))
+
+   reg_write := io.in_reg_write
+   mem_read := io.in_mem_read
+   mem_write := io.in_mem_write
+   branch := io.in_branch
+   jump := io.in_jump
+   rd := io.in_rd
+   result := io.in_result
+
+   io.out_reg_write := reg_write
+   io.out_mem_read := mem_read
+   io.out_mem_write := mem_write
+   io.out_branch := branch
+   io.out_jump := jump
+   io.out_rd := rd
+   io.out_result := result
+}
+
+class MEMBarrier extends Module {
+  val io = IO(
+    new Bundle {
+      val in_rd = Input(UInt(5.W))
+      val in_reg_write = Input(Bool())
+      val in_result = Input(UInt(32.W))
+
+
+      val out_rd = Output(UInt(5.W))
+      val out_reg_write = Output(Bool())
+      val out_result = Output(UInt(32.W))
+    }
+  )
+
+   val rd = RegInit(0.U(32.W))
+   val reg_write = RegInit(0.U(32.W))
+   val result = RegInit(0.U(32.W))
+
+   rd := io.in_rd
+   reg_write := io.in_reg_write
+   result := io.in_result
+
+   io.out_rd := rd
+   io.out_reg_write := reg_write
+   io.out_result := result
 }
