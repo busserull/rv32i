@@ -72,69 +72,20 @@ class InstructionDecode extends MultiIOModule {
   io.rd := raw_inst(11, 7)
   io.control := decoder.controlSignals
 
-  switch(decoder.op1Select){
-    is(rs1){
-      io.op_one := registers.io.readData1
-    }
-    is(PC){
-      io.op_one := io.pc
-    }
-  }
-
-  switch(decoder.op2Select){
-    is(rs2){
-      io.op_two := registers.io.readData2
-    }
-    is(imm){
-      io.op_two := raw_inst(31, 20)
-    }
-  }
-
-  /*
-  when(decoder.op1Select === Op1Select.rs1){
+  when(decoder.op1Select === rs1){
     io.op_one := registers.io.readData1
-  }.elsewhen(decoder.op1Select === Op1Select.PC){
+  }.elsewhen(decoder.op1Select === PC){
     io.op_one := io.pc
   }.otherwise{
     io.op_one := 0.U(32.W)
   }
-  */
 
-  /*
-  switch(decoder.op1Select){
-    is(Op1Select.rs1){
-      io.op_one := registers.io.readData1
-    }
-    is(Op1Select.PC){
-      io.op_one := io.pc
-    }
-    is(Op1Select.DC){
-      io.op_one := 0.U(32.W)
-    }
-  }
-  */
-
-  /*
-  when(decoder.op2Select === Op2Select.rs2){
+  when(decoder.op2Select === rs2){
     io.op_two := registers.io.readData2
-  }.elsewhen(decoder.op2Select === Op2Select.imm){
+  }.elsewhen(decoder.op2Select === imm){
+    /* TODO: sign extend this */
     io.op_two := raw_inst(31, 20)
   }.otherwise{
     io.op_two := 0.U(32.W)
   }
-  */
-
-  /*
-  switch(decoder.op2Select){
-    is(Op2Select.rs2){
-      io.op_two := registers.io.readData2
-    }
-    is(Op2Select.imm){
-      io.op_two := raw_inst(31, 20)
-    }
-    is(Op2Select.DC){
-      io.op_two := 0.U(32.W)
-    }
-  }
-  */
 }
