@@ -27,7 +27,13 @@ class CPU extends MultiIOModule {
   val ID  = Module(new InstructionDecode)
   val EX  = Module(new Execute)
   val MEM = Module(new MemoryFetch)
-  val WB  = Module(new WriteBack)
+
+  // Try without an explicit WB, instead creating
+  // some unholy mix with ID.
+  // 
+  // Oh boy, what horrors are we creating?
+  // 
+  // val WB  = Module(new WriteBack)
 
 
   /**
@@ -35,7 +41,6 @@ class CPU extends MultiIOModule {
     */
   IF.testHarness.IMEMsetup     := testHarness.setupSignals.IMEMsignals
   ID.testHarness.registerSetup := testHarness.setupSignals.registerSignals
-  WB.test_harness.register_setup := testHarness.setupSignals.registerSignals
   MEM.testHarness.DMEMsetup    := testHarness.setupSignals.DMEMsignals
 
   testHarness.testReadouts.registerRead := ID.testHarness.registerPeek
@@ -56,11 +61,7 @@ class CPU extends MultiIOModule {
   ID.io.inst := IFB.out_inst
 
   /* ID Barrier */
-  IDB.in_reg_write := ID.io.reg_write
-  IDB.in_mem_read := ID.io.mem_read
-  IDB.in_mem_write := ID.io.mem_write
-  IDB.in_branch := ID.io.branch
-  IDB.in_jump := ID.io.jump
+  IDB.in_control := ID.io.control
   IDB.in_rd := ID.io.rd
   IDB.in_alu_op := ID.io.alu_op
   IDB.in_op_one := ID.io.op_one
@@ -71,11 +72,7 @@ class CPU extends MultiIOModule {
   EX.io.op_two := IDB.out_op_two
 
   /* EX Barrier */
-  EXB.in_reg_write := IDB.out_reg_write
-  EXB.in_mem_read := IDB.out_mem_read
-  EXB.in_mem_write := IDB.out_mem_write
-  EXB.in_branch := IDB.out_branch
-  EXB.in_jump := IDB.out_jump
+  EXB.in_control := IDB.out_control
   EXB.in_rd := IDB.out_rd
   EXB.in_result := EX.io.result
 
@@ -85,12 +82,12 @@ class CPU extends MultiIOModule {
   // MEM.io.op_two := EXB.out_op_two
 
   /* MEM Barrier */
+  MEMB.in_control := EXB.out_control
   MEMB.in_rd := EXB.out_rd
-  MEMB.in_reg_write := EXB.out_reg_write
   MEMB.in_result := EXB.out_result
 
   /* Write Back */
-  WB.io.rd := MEMB.out_rd
-  WB.io.reg_write := MEMB.out_reg_write
-  WB.io.result := MEMB.out_result
+  ID.io.wb_enable := MEMB.out_control.regWrite
+  ID.io.wb_address := MEMB.out_rd
+  ID.io.wb_data := MEMB.out_result
 }
