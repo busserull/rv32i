@@ -4,6 +4,7 @@ import chisel3._
 import chisel3.core.Input
 import chisel3.experimental.MultiIOModule
 import chisel3.experimental._
+import chisel3.util.Counter
 
 
 class CPU extends MultiIOModule {
