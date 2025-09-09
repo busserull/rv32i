@@ -1,6 +1,6 @@
 package FiveStage
 import chisel3._
-import chisel3.util.{SwitchContext, switch, is}
+import chisel3.util.{SwitchContext, switch, is, Cat, Fill}
 import ALUOps._
 
 class ALU extends Module {
@@ -32,22 +32,22 @@ class ALU extends Module {
     is(XOR){
       io.result := io.op_one ^ io.op_two
     }
-    /* TODO:
     is(SLT){
-      
+      io.result := io.op_one.asSInt() < io.op_two.asSInt()
     }
     is(SLL){
-      
+      io.result := io.op_one << io.op_two(4, 0)
     }
     is(SLTU){
-      
+      io.result := io.op_one.asUInt() < io.op_two.asUInt()
     }
     is(SRL){
-      
+      io.result := (io.op_one.asUInt()) >> io.op_two
     }
     is(SRA){
-      
+      io.result := (io.op_one.asSInt() >> io.op_two(4, 0)).asUInt()
     }
+    /*
     is(COPY_A){
       
     }
