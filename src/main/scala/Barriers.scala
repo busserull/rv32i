@@ -37,6 +37,13 @@ class IDBarrier extends Module {
     }
   )
 
+   io.out_control := io.in_control
+   io.out_rd := io.in_rd
+   io.out_alu_op := io.in_alu_op
+   io.out_op_one := io.in_op_one
+   io.out_op_two := io.in_op_two
+
+   /*
    val control = Reg(new ControlSignals)
    val rd = RegInit(0.U(5.W))
    val alu_op = RegInit(0.U(32.W))
@@ -54,6 +61,7 @@ class IDBarrier extends Module {
    io.out_alu_op := alu_op
    io.out_op_one := op_one
    io.out_op_two := op_two
+   */
 }
 
 class EXBarrier extends Module {
@@ -69,6 +77,11 @@ class EXBarrier extends Module {
     }
   )
 
+   io.out_control := io.in_control
+   io.out_rd := io.in_rd
+   io.out_result := io.in_result
+
+   /*
    val control = Reg(new ControlSignals)
    val rd = RegInit(0.U(5.W))
    val result = RegInit(0.U(32.W))
@@ -80,6 +93,7 @@ class EXBarrier extends Module {
    io.out_control := control
    io.out_rd := rd
    io.out_result := result
+   */
 }
 
 class MEMBarrier extends Module {
@@ -95,6 +109,11 @@ class MEMBarrier extends Module {
     }
   )
 
+  io.out_control := io.in_control
+  io.out_rd := io.in_rd
+  io.out_result := io.in_result
+
+   /*
    val control = Reg(new ControlSignals)
    val rd = RegInit(0.U(32.W))
    val result = RegInit(0.U(32.W))
@@ -106,4 +125,5 @@ class MEMBarrier extends Module {
    io.out_control := control
    io.out_rd := rd
    io.out_result := result
+   */
 }

@@ -1,6 +1,6 @@
 package FiveStage
 import chisel3._
-import chisel3.util.{ BitPat, MuxCase, SwitchContext, switch, is }
+import chisel3.util.{ BitPat, MuxCase, SwitchContext, switch, is, Cat, Fill}
 import chisel3.experimental.MultiIOModule
 import Op1Select.{rs1, PC}
 import Op2Select.{rs2, imm}
@@ -84,7 +84,8 @@ class InstructionDecode extends MultiIOModule {
     io.op_two := registers.io.readData2
   }.elsewhen(decoder.op2Select === imm){
     /* TODO: sign extend this */
-    io.op_two := raw_inst(31, 20)
+    // io.op_two := raw_inst(31, 20)
+    io.op_two := Cat(Fill(20, raw_inst(31)), raw_inst(31, 20))
   }.otherwise{
     io.op_two := 0.U(32.W)
   }
