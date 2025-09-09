@@ -1,7 +1,9 @@
 package FiveStage
 import chisel3._
 import chisel3.core.Wire
-import chisel3.util.{ BitPat, Cat }
+import chisel3.util.{ BitPat, Cat, Fill, MuxCase }
+
+import ImmFormat.{ITYPE, STYPE}
 
 
 class Instruction extends Bundle(){
@@ -14,6 +16,21 @@ class Instruction extends Bundle(){
   def registerRs2 = instruction(24, 20)
   def funct7      = instruction(31, 25)
   def funct6      = instruction(26, 31)
+
+  def imm(format: UInt): UInt = {
+    MuxCase(
+      // DC is the default
+      0.U(32.W),
+
+      Array(
+        (format === ITYPE) -> Cat(Fill(20, instruction(31)), instruction(31, 20)),
+        (format === STYPE) -> Cat(Fill(20, instruction(31)), Cat(instruction(31, 25), instruction(11, 7)))
+      )
+    )
+  }
+
+  def immI = Cat(Fill(20, instruction(31)), instruction(31, 20))
+  def immS = Cat(Fill(20, instruction(31)), Cat(instruction(31, 25), instruction(11, 7)))
 
   def immediateIType = instruction(31, 20).asSInt
   def immediateSType = Cat(instruction(31, 25), instruction(11,7)).asSInt

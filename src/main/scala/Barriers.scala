@@ -28,12 +28,14 @@ class IDBarrier extends Module {
       val in_alu_op = Input(UInt(4.W))
       val in_op_one = Input(UInt(32.W))
       val in_op_two = Input(UInt(32.W))
+      val in_target = Input(UInt(32.W))
 
       val out_control = Output(new ControlSignals)
       val out_rd = Output(UInt(5.W))
       val out_alu_op = Output(UInt(4.W))
       val out_op_one = Output(UInt(32.W))
       val out_op_two = Output(UInt(32.W))
+      val out_target = Output(UInt(32.W))
     }
   )
 
@@ -42,18 +44,21 @@ class IDBarrier extends Module {
    val alu_op = RegInit(0.U(32.W))
    val op_one = RegInit(0.U(32.W))
    val op_two = RegInit(0.U(32.W))
+   val target = RegInit(0.U(32.W))
 
    control := io.in_control
    rd := io.in_rd
    alu_op := io.in_alu_op
    op_one := io.in_op_one
    op_two := io.in_op_two
+   target := io.in_target
 
    io.out_control := control
    io.out_rd := rd
    io.out_alu_op := alu_op
    io.out_op_one := op_one
    io.out_op_two := op_two
+   io.out_target := target
 }
 
 class EXBarrier extends Module {
@@ -62,29 +67,29 @@ class EXBarrier extends Module {
       val in_control = Input(new ControlSignals)
       val in_rd = Input(UInt(5.W))
       val in_result = Input(UInt(32.W))
-      val in_op_two = Input(UInt(32.W))
+      val in_target = Input(UInt(32.W))
 
       val out_control = Output(new ControlSignals)
       val out_rd = Output(UInt(5.W))
       val out_result = Output(UInt(32.W))
-      val out_op_two = Output(UInt(32.W))
+      val out_target = Output(UInt(32.W))
     }
   )
 
    val control = Reg(new ControlSignals)
    val rd = RegInit(0.U(5.W))
    val result = RegInit(0.U(32.W))
-   val op_two = RegInit(0.U(32.W))
+   val target = RegInit(0.U(32.W))
 
    control := io.in_control
    rd := io.in_rd
    result := io.in_result
-   op_two := io.in_op_two
+   target := io.in_target
 
    io.out_control := control
    io.out_rd := rd
    io.out_result := result
-   io.out_op_two := op_two
+   io.out_target := target
 }
 
 class MEMBarrier extends Module {

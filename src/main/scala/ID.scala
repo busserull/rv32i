@@ -32,6 +32,7 @@ class InstructionDecode extends MultiIOModule {
       val alu_op = Output(UInt(4.W))
       val op_one = Output(UInt(32.W))
       val op_two = Output(UInt(32.W))
+      val target = Output(UInt(32.W))
     }
   )
 
@@ -45,12 +46,9 @@ class InstructionDecode extends MultiIOModule {
   testHarness.registerPeek    := registers.io.readData1
   testHarness.testUpdates     := registers.testHarness.testUpdates
 
-  val raw_inst = Wire(UInt(32.W))
-  raw_inst := io.inst.asUInt()
 
-
-  registers.io.readAddress1 := raw_inst(19, 15)
-  registers.io.readAddress2 := raw_inst(24, 20)
+  registers.io.readAddress1 := io.inst.registerRs1
+  registers.io.readAddress2 := io.inst.registerRs2
 
   registers.io.writeEnable  := io.wb_enable
   registers.io.writeAddress := io.wb_address
@@ -67,8 +65,10 @@ class InstructionDecode extends MultiIOModule {
 
   io.alu_op := decoder.ALUop
 
-  io.rd := raw_inst(11, 7)
+  io.rd := io.inst.registerRd
   io.control := decoder.controlSignals
+
+  io.target := registers.io.readData2
 
   when(decoder.op1Select === Op1Select.rs1){
     io.op_one := registers.io.readData1
@@ -81,7 +81,7 @@ class InstructionDecode extends MultiIOModule {
   when(decoder.op2Select === Op2Select.rs2){
     io.op_two := registers.io.readData2
   }.elsewhen(decoder.op2Select === Op2Select.imm){
-    io.op_two := Cat(Fill(20, raw_inst(31)), raw_inst(31, 20))
+    io.op_two := io.inst.imm(decoder.immType)
   }.otherwise{
     io.op_two := 0.U(32.W)
   }

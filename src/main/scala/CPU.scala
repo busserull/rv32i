@@ -67,6 +67,7 @@ class CPU extends MultiIOModule {
   IDB.in_alu_op := ID.io.alu_op
   IDB.in_op_one := ID.io.op_one
   IDB.in_op_two := ID.io.op_two
+  IDB.in_target := ID.io.target
 
   EX.io.alu_op := IDB.out_alu_op
   EX.io.op_one := IDB.out_op_one
@@ -76,10 +77,10 @@ class CPU extends MultiIOModule {
   EXB.in_control := IDB.out_control
   EXB.in_rd := IDB.out_rd
   EXB.in_result := EX.io.result
-  EXB.in_op_two := IDB.out_op_two
+  EXB.in_target := IDB.out_target
 
   MEM.io.address := EXB.out_result
-  MEM.io.data_in := EXB.out_op_two
+  MEM.io.data_in := EXB.out_target
   MEM.io.mem_read := EXB.out_control.memRead
   MEM.io.mem_write := EXB.out_control.memWrite
 
