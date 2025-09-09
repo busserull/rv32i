@@ -29,11 +29,11 @@ class Decoder() extends Module {
   import lookup._
   import Op1Select._
   import Op2Select._
-  import branchType._
+  // import branchType._
   import ImmFormat._
 
-  val N = 0.asUInt(1.W)
-  val Y = 1.asUInt(1.W)
+  val N = 0.U(1.W)
+  val Y = 1.U(1.W)
 
   /**
     * In scala we sometimes (ab)use the `->` operator to create tuples.

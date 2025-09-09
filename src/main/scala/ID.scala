@@ -66,25 +66,21 @@ class InstructionDecode extends MultiIOModule {
   decoder.instruction := io.inst
 
   io.alu_op := decoder.ALUop
-  io.op_one := 0.U(32.W)
-  io.op_two := 0.U(32.W)
 
   io.rd := raw_inst(11, 7)
   io.control := decoder.controlSignals
 
-  when(decoder.op1Select === rs1){
+  when(decoder.op1Select === Op1Select.rs1){
     io.op_one := registers.io.readData1
-  }.elsewhen(decoder.op1Select === PC){
+  }.elsewhen(decoder.op1Select === Op1Select.PC){
     io.op_one := io.pc
   }.otherwise{
     io.op_one := 0.U(32.W)
   }
 
-  when(decoder.op2Select === rs2){
+  when(decoder.op2Select === Op2Select.rs2){
     io.op_two := registers.io.readData2
-  }.elsewhen(decoder.op2Select === imm){
-    /* TODO: sign extend this */
-    // io.op_two := raw_inst(31, 20)
+  }.elsewhen(decoder.op2Select === Op2Select.imm){
     io.op_two := Cat(Fill(20, raw_inst(31)), raw_inst(31, 20))
   }.otherwise{
     io.op_two := 0.U(32.W)
