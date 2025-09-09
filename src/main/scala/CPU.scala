@@ -86,7 +86,8 @@ class CPU extends MultiIOModule {
   /* MEM Barrier */
   MEMB.in_control := EXB.out_control
   MEMB.in_rd := EXB.out_rd
-  MEMB.in_result := MEM.io.data_out
+  MEMB.in_result := EXB.out_result
+  MEMB.in_mem := MEM.io.data_out
 
   /* Write Back */
   ID.io.wb_enable := MEMB.out_control.regWrite

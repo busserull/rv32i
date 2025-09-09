@@ -93,6 +93,7 @@ class MEMBarrier extends Module {
       val in_control = Input(new ControlSignals)
       val in_rd = Input(UInt(5.W))
       val in_result = Input(UInt(32.W))
+      val in_mem = Input(UInt(32.W))
 
       val out_control = Output(new ControlSignals)
       val out_rd = Output(UInt(5.W))
@@ -110,5 +111,10 @@ class MEMBarrier extends Module {
 
    io.out_control := control
    io.out_rd := rd
-   io.out_result := result
+
+   when(control.memRead){
+     io.out_result := io.in_mem
+   }.otherwise{
+     io.out_result := result
+   }
 }
