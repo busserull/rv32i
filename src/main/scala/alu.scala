@@ -55,11 +55,5 @@ class ALU extends Module {
       
     }
     */
-
-    /* Not really needed any longer
-    is(DC){
-      io.result := 0.U(32.W)
-    }
-    */
   }
 }

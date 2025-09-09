@@ -76,16 +76,17 @@ class CPU extends MultiIOModule {
   EXB.in_control := IDB.out_control
   EXB.in_rd := IDB.out_rd
   EXB.in_result := EX.io.result
+  EXB.in_op_two := IDB.out_op_two
 
-  /* TODO: For now just stub out memory entirely */
-  // MEM.io.alu_op := EXB.out_alu_op
-  // MEM.io.op_one := EXB.out_op_one
-  // MEM.io.op_two := EXB.out_op_two
+  MEM.io.address := EXB.out_result
+  MEM.io.data_in := EXB.out_op_two
+  MEM.io.mem_read := EXB.out_control.memRead
+  MEM.io.mem_write := EXB.out_control.memWrite
 
   /* MEM Barrier */
   MEMB.in_control := EXB.out_control
   MEMB.in_rd := EXB.out_rd
-  MEMB.in_result := EXB.out_result
+  MEMB.in_result := MEM.io.data_out
 
   /* Write Back */
   ID.io.wb_enable := MEMB.out_control.regWrite

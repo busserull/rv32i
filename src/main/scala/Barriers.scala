@@ -62,24 +62,29 @@ class EXBarrier extends Module {
       val in_control = Input(new ControlSignals)
       val in_rd = Input(UInt(5.W))
       val in_result = Input(UInt(32.W))
+      val in_op_two = Input(UInt(32.W))
 
       val out_control = Output(new ControlSignals)
       val out_rd = Output(UInt(5.W))
       val out_result = Output(UInt(32.W))
+      val out_op_two = Output(UInt(32.W))
     }
   )
 
    val control = Reg(new ControlSignals)
    val rd = RegInit(0.U(5.W))
    val result = RegInit(0.U(32.W))
+   val op_two = RegInit(0.U(32.W))
 
    control := io.in_control
    rd := io.in_rd
    result := io.in_result
+   op_two := io.in_op_two
 
    io.out_control := control
    io.out_rd := rd
    io.out_result := result
+   io.out_op_two := op_two
 }
 
 class MEMBarrier extends Module {
