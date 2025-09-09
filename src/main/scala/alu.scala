@@ -42,7 +42,7 @@ class ALU extends Module {
       io.result := io.op_one.asUInt() < io.op_two.asUInt()
     }
     is(SRL){
-      io.result := (io.op_one.asUInt()) >> io.op_two
+      io.result := (io.op_one.asUInt()) >> io.op_two(4, 0)
     }
     is(SRA){
       io.result := (io.op_one.asSInt() >> io.op_two(4, 0)).asUInt()
