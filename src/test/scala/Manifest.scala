@@ -19,13 +19,19 @@ import LogParser._
 
 object Manifest {
 
+  /* Milestone 1 */
   // val singleTest = "addi.s"
   // val singleTest = "arithImm.s"
   // val singleTest = "arith.s"
   // val singleTest = "forward1.s"
   // val singleTest = "forward2.s"
   // val singleTest = "load.s"
-  val singleTest = "load2.s"
+  // val singleTest = "load2.s"
+
+  /* Milestone 2 */
+  // val singleTest = "add.s"
+  // val singleTest = "square.s"
+  val singleTest = "constants.s"
 
   val nopPadded = true
 
